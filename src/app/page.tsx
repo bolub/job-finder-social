@@ -10,7 +10,6 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useAuthSession } from "@/hooks/use-auth-session";
 
 const quickSearches = [
   {
@@ -58,8 +57,6 @@ const tips = [
 ];
 
 export default function Home() {
-  const { loadingSession, session } = useAuthSession();
-
   return (
     <Box bg="gray.50" minH="100vh" py={{ base: "8", md: "12" }}>
       <Box maxW="5xl" mx="auto">
@@ -85,11 +82,6 @@ export default function Home() {
               saved applications on the applications page.
             </Text>
             <Stack direction={{ base: "column", sm: "row" }} gap="3">
-              {!loadingSession && !session ? (
-                <Button asChild colorPalette="blue" size="lg" px="6">
-                  <a href="/auth">Sign in or sign up</a>
-                </Button>
-              ) : null}
               <Button
                 asChild
                 colorPalette="blue"
