@@ -1,5 +1,8 @@
+"use client";
+
 import {
   Box,
+  Button,
   Heading,
   Link,
   List,
@@ -7,6 +10,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useAuthSession } from "@/hooks/use-auth-session";
 
 const quickSearches = [
   {
@@ -54,76 +58,97 @@ const tips = [
 ];
 
 export default function Home() {
+  const { loadingSession, session } = useAuthSession();
+
   return (
-    <Box bg="gray.50" minH="100vh" py={{ base: "10", md: "16" }}>
-      <Box maxW="4xl" mx="auto">
-        <Stack gap="10">
+    <Box bg="gray.50" minH="100vh" py={{ base: "8", md: "12" }}>
+      <Box maxW="5xl" mx="auto">
+        <Stack gap="8">
           <Stack gap="4">
             <Text color="gray.600" fontSize="sm" fontWeight="600">
-              Part-time jobs in Bermondsey
+              Bermondsey part-time job finder
             </Text>
             <Heading
               color="gray.900"
               fontSize={{ base: "3xl", md: "5xl" }}
-              letterSpacing="-0.03em"
               maxW="12ch"
+              lineHeight="1"
             >
-              Find straightforward part-time jobs near you.
+              Find jobs quickly and track applications cleanly.
             </Heading>
             <Text
               color="gray.700"
               fontSize={{ base: "md", md: "lg" }}
               maxW="2xl"
             >
-              This page is for a student in Bermondsey who wants part-time work.
-              It is not limited to social work roles.
+              Search from the links below, sign in on the auth page, and manage
+              saved applications on the applications page.
             </Text>
             <Stack direction={{ base: "column", sm: "row" }} gap="3">
-              <Link
-                alignItems="center"
-                bg="blue.600"
-                borderRadius="md"
+              {!loadingSession && !session ? (
+                <Button asChild colorPalette="blue" size="lg" px="6">
+                  <a href="/auth">Sign in or sign up</a>
+                </Button>
+              ) : null}
+              <Button
+                asChild
+                colorPalette="blue"
                 color="white"
-                display="inline-flex"
-                href="#searches"
-                fontWeight="600"
-                h="12"
-                justifyContent="center"
+                size="lg"
                 px="6"
-                _hover={{ bg: "blue.700", textDecoration: "none" }}
               >
-                Open job searches
-              </Link>
-              <Link
-                alignItems="center"
-                borderColor="gray.300"
-                borderRadius="md"
-                borderWidth="1px"
-                color="gray.800"
-                display="inline-flex"
-                href="#ideas"
-                fontWeight="600"
-                h="12"
-                justifyContent="center"
-                px="6"
-                _hover={{ bg: "gray.100", textDecoration: "none" }}
-              >
-                See role ideas
-              </Link>
+                <a
+                  href={quickSearches[0].href}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  Open job searches
+                </a>
+              </Button>
+              <Button asChild px="6" size="lg" variant="outline">
+                <a href="/applications">Open applications</a>
+              </Button>
             </Stack>
           </Stack>
+
+          <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
+            {quickSearches.map((item) => (
+              <Link
+                key={item.title}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                _hover={{ textDecoration: "none" }}
+                width="full"
+              >
+                <Box
+                  bg="white"
+                  borderRadius="xl"
+                  borderWidth="1px"
+                  p="5"
+                  transition="border-color 0.2s ease"
+                  _hover={{ borderColor: "blue.400" }}
+                  width="full"
+                >
+                  <Text color="gray.900" fontWeight="600">
+                    {item.title}
+                  </Text>
+                </Box>
+              </Link>
+            ))}
+          </SimpleGrid>
 
           <Box
             bg="white"
             borderRadius="xl"
             borderWidth="1px"
-            p={{ base: "5", md: "6" }}
+            p={{ base: "6", md: "8" }}
           >
-            <Stack gap="3">
-              <Text color="gray.500" fontSize="sm" fontWeight="600">
+            <Stack gap="6">
+              <Text color="gray.500" fontSize="sm" fontWeight="700">
                 Best places to look
               </Text>
-              <Text color="gray.800" fontSize="md">
+              <Text color="gray.800" fontSize="lg" lineHeight="1.5">
                 Focus on jobs that hire quickly and fit around study:
                 hospitality, retail, admin, customer service, warehouse,
                 tutoring, events, and care.
@@ -131,53 +156,18 @@ export default function Home() {
             </Stack>
           </Box>
 
-          <Stack gap="4" id="searches">
-            <Heading color="gray.900" fontSize={{ base: "2xl", md: "3xl" }}>
-              Quick searches
-            </Heading>
-            <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
-              {quickSearches.map((item) => (
-                <Link
-                  key={item.title}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  _hover={{ textDecoration: "none" }}
-                >
-                  <Box
-                    bg="white"
-                    borderRadius="xl"
-                    borderWidth="1px"
-                    p="5"
-                    transition="border-color 0.2s ease"
-                    _hover={{ borderColor: "blue.400" }}
-                  >
-                    <Text color="gray.900" fontWeight="600">
-                      {item.title}
-                    </Text>
-                  </Box>
-                </Link>
-              ))}
-            </SimpleGrid>
-          </Stack>
-
           <SimpleGrid columns={{ base: 1, md: 2 }} gap="6">
             <Box
-              id="ideas"
               bg="white"
               borderRadius="xl"
               borderWidth="1px"
-              p={{ base: "5", md: "6" }}
+              p={{ base: "6", md: "8" }}
             >
-              <Stack gap="4">
-                <Heading color="gray.900" fontSize="xl">
-                  Role ideas
-                </Heading>
-                <List.Root gap="2">
+              <Stack gap="5">
+                <Heading fontSize="xl">Role ideas</Heading>
+                <List.Root color="gray.700" fontSize="md" gap="4" pl="5">
                   {roleIdeas.map((role) => (
-                    <List.Item key={role} color="gray.700">
-                      {role}
-                    </List.Item>
+                    <List.Item key={role}>{role}</List.Item>
                   ))}
                 </List.Root>
               </Stack>
@@ -187,17 +177,13 @@ export default function Home() {
               bg="white"
               borderRadius="xl"
               borderWidth="1px"
-              p={{ base: "5", md: "6" }}
+              p={{ base: "6", md: "8" }}
             >
-              <Stack gap="4">
-                <Heading color="gray.900" fontSize="xl">
-                  Simple plan
-                </Heading>
-                <List.Root gap="2">
+              <Stack gap="5">
+                <Heading fontSize="xl">Simple plan</Heading>
+                <List.Root color="gray.700" fontSize="md" gap="4" pl="5">
                   {tips.map((tip) => (
-                    <List.Item key={tip} color="gray.700">
-                      {tip}
-                    </List.Item>
+                    <List.Item key={tip}>{tip}</List.Item>
                   ))}
                 </List.Root>
               </Stack>
